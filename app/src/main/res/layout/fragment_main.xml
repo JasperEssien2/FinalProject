@@ -42,6 +42,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/instructions_text_view"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 android:onClick="tellJoke"
                 android:text="@string/button_text" />
 
