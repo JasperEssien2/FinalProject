@@ -9,25 +9,25 @@ import android.widget.ImageView;
 
 
 public class ProgressBar {
-    private Animation loadingProgressBarAnim;
-    private ImageView loadingProgressBar;
+    private Animation mLoadingProgressBarAnim;
+    private ImageView mLoadingProgressBar;
 
     public ProgressBar(ImageView view, Activity context){
-        loadingProgressBar = view;
+        mLoadingProgressBar = view;
         view.setVisibility(View.GONE);
-        loadingProgressBarAnim = AnimationUtils.loadAnimation(context, R.anim.anim_custom_loading_progress);
-        loadingProgressBarAnim.setRepeatMode(Animation.RESTART);
-        loadingProgressBarAnim.setRepeatCount(Animation.INFINITE);
+        mLoadingProgressBarAnim = AnimationUtils.loadAnimation(context, R.anim.anim_custom_loading_progress);
+        mLoadingProgressBarAnim.setRepeatMode(Animation.RESTART);
+        mLoadingProgressBarAnim.setRepeatCount(Animation.INFINITE);
     }
 
     public void startLoading(){
-        loadingProgressBar.setVisibility(View.VISIBLE);
-        loadingProgressBar.startAnimation(loadingProgressBarAnim);
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
+        mLoadingProgressBar.startAnimation(mLoadingProgressBarAnim);
     }
 
     public void stopLoading(){
-        loadingProgressBarAnim.cancel();
-        loadingProgressBar.clearAnimation();
-        loadingProgressBar.setVisibility(View.GONE);
+        mLoadingProgressBarAnim.cancel();
+        mLoadingProgressBar.clearAnimation();
+        mLoadingProgressBar.setVisibility(View.GONE);
     }
 }

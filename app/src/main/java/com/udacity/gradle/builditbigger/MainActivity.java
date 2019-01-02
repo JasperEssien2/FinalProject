@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.android.displayjokelib.JokeActivity;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -20,13 +23,17 @@ import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity {
-    ProgressBar progressBar;
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    ProgressBar mProgressBar;
+    private Button mTellJokeButton;
+    public static final String EXTRA_JOKE = "Joke";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        progressBar = new ProgressBar((ImageView) findViewById(R.id.progressbar), this);
+        mProgressBar = new ProgressBar((ImageView) findViewById(R.id.progressbar), this);
+        mTellJokeButton = findViewById(R.id.button);
     }
 
 
@@ -58,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void tellJoke(View view) {
-        progressBar.startLoading();
+        mProgressBar.startLoading();
+        mTellJokeButton.setEnabled(false);
         new EndPointAsyncTask(new CallBacks() {
             @Override
             public void onPostExecuteCallback(String s) {
@@ -74,9 +82,14 @@ public class MainActivity extends AppCompatActivity {
      * @param s joke String value
      */
     private void onCallBackCalled(String s) {
-        this.progressBar.stopLoading();
+        this.mProgressBar.stopLoading();
+        mTellJokeButton.setEnabled(true);
+        if (s == null) {
+            Toast.makeText(this, "Error retrieving Jokes", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(this, JokeActivity.class);
-        intent.putExtra("Joke", s);
+        intent.putExtra(EXTRA_JOKE, s);
         startActivity(intent);
     }
 
@@ -101,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                         .setRootUrl("http://10.0.2.2:8080/_ah/api/")
                         .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                             @Override
-                            public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
+                            public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) {
                                 abstractGoogleClientRequest.setDisableGZipContent(true);
                             }
                         });
@@ -115,7 +128,13 @@ public class MainActivity extends AppCompatActivity {
 
                 return myApiService.getJoke().execute().getData();
             } catch (IOException e) {
-                return e.getMessage();
+                if (e != null)
+                    Log.e(LOG_TAG, e.getMessage());
+                else Log.e(LOG_TAG, "IOException occurred");
+                return null;
+            } catch (Exception e) {
+                Log.e(LOG_TAG, e.getMessage());
+                return null;
             }
         }
 

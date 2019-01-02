@@ -5,7 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class EndPointAsyncTaskTest {
@@ -14,6 +14,7 @@ public class EndPointAsyncTaskTest {
 
     @Test
     public void doInBackgroundTest() {
+
         new MainActivity.EndPointAsyncTask(new MainActivity.CallBacks() {
             @Override
             public void onPostExecuteCallback(String s) {
@@ -22,7 +23,7 @@ public class EndPointAsyncTaskTest {
         }).execute();
         try {
             Thread.sleep(5000);
-            assertTrue("------ Joke Value Not Null ------", jokeValue != null);
+            assertNotNull("------ Joke Value Not Null ------", jokeValue);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
